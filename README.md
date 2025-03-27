@@ -1,2 +1,3 @@
 # doitwrite
-A selfhosted note taking app
+
+a selhosted note taking app with markdown support
