@@ -1,4 +1,4 @@
-import { pool, query } from "@/lib/db";
+import { query } from "@/lib/db";
 import { Favorite } from "@/lib/types";
 import { NextRequest, NextResponse } from "next/server";
 
