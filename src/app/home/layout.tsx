@@ -16,6 +16,7 @@ export default async function HomeLayout({
   });
 
   if (!session) {
+    console.log("No session");
     redirect("/sign-in");
   }
 

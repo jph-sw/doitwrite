@@ -15,6 +15,7 @@
 db.db
 bun.lock
 package-lock.json
+docker-compose.yml
 
 # testing
 /coverage

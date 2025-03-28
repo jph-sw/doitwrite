@@ -59,6 +59,9 @@ export function AppSidebar() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: collectionOptions.queryKey });
     },
+    onError: (error) => {
+      console.error(error);
+    },
   });
 
   const entryMutation = useMutation({

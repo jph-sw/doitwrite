@@ -1,12 +1,29 @@
-import Database from "better-sqlite3";
+import { Pool, QueryResultRow } from "pg";
 
-export const db = new Database("./db.db");
+export const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+});
 
-db.prepare(`
-  CREATE TABLE IF NOT EXISTS collection (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+export const query = <Result extends QueryResultRow>(
+  text: string,
+  params: string[] = [],
+) => {
+  return pool.query<Result>(text, params);
+};
+pool.query(`
+  CREATE TABLE IF NOT EXISTS entry (
+    id SERIAL PRIMARY KEY,
+    collection_id INTEGER NOT NULL,
     title TEXT NOT NULL,
-    icon TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    content TEXT NOT NULL
+  )
+  `);
+
+pool.query(`
+  CREATE TABLE IF NOT EXISTS collection (
+    id SERIAL PRIMARY KEY,
+    title TEXT NOT NULL,
     color TEXT
   )
   `);

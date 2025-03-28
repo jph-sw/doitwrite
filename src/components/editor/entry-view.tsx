@@ -1,10 +1,6 @@
 "use client";
 
-import {
-  getEntryById,
-  updateEntryContent,
-  updateEntryTitle,
-} from "@/app/actions/entry";
+import { getEntryById, updateEntryContent } from "@/app/actions/entry";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Input } from "../ui/input";
 import TiptapEditor from "./TiptapEditor";
@@ -26,7 +22,13 @@ export function EntryView({ entryId }: { entryId: string }) {
 
   const titleMutation = useMutation({
     mutationFn: async (title: string) => {
-      await updateEntryTitle(entryId, title);
+      await fetch(`/api/entry/title`, {
+        method: "POST",
+        body: JSON.stringify({ title, entryId }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["entries"] });
@@ -54,6 +56,7 @@ export function EntryView({ entryId }: { entryId: string }) {
               className="p-4 flex gap-2"
               onSubmit={(e: FormEvent) => {
                 e.preventDefault();
+                console.log("Saving title:", newTitle); // Add this line
                 titleMutation.mutate(newTitle ?? "New Entry");
                 setNewTitle("");
               }}

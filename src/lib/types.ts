@@ -8,6 +8,6 @@ export type Entry = {
   id: number;
   collection_id: number;
   title: string;
-  created_at: Date;
+  created_at: string;
   content: string;
 };
