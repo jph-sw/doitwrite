@@ -18,3 +18,15 @@ export async function POST(req: NextRequest) {
 
   return NextResponse.json(result);
 }
+
+export async function DELETE(req: NextRequest) {
+  const searchParams = req.nextUrl.searchParams;
+  console.log(searchParams);
+  const id = searchParams.get("id");
+
+  console.log(id);
+
+  const result = await pool.query("DELETE FROM entry WHERE id = $1", [id]);
+
+  return NextResponse.json(result);
+}

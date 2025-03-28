@@ -1,6 +1,12 @@
 "use client";
 
-import { ChevronRight, MoreHorizontal, Notebook } from "lucide-react";
+import {
+  ChevronRight,
+  MoreHorizontal,
+  Notebook,
+  Star,
+  XIcon,
+} from "lucide-react";
 
 import {
   Sidebar,
@@ -38,6 +44,14 @@ import {
 } from "../ui/collapsible";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "../ui/dropdown-menu";
 
 export function AppSidebar() {
   const queryClient = getQueryClient();
@@ -79,9 +93,25 @@ export function AppSidebar() {
     },
   });
 
+  const deleteEntryMutation = useMutation({
+    mutationFn: async (id: number) => {
+      await fetch(`/api/entry?id=${id}`, {
+        method: "DELETE",
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: entryOptions.queryKey });
+    },
+  });
+
   const isCollectionPath = (collectionId: number): boolean => {
     const pattern = new RegExp(`^/home/${collectionId}(/.*)?$`);
     return pattern.test(pathname);
+  };
+
+  const isActive = (entryId: number): boolean => {
+    const pattern = new RegExp(`/home/[^/]+/${entryId}$`);
+    return pattern.test(window.location.pathname);
   };
 
   return (
@@ -135,16 +165,40 @@ export function AppSidebar() {
                                 <SidebarMenuSubItem
                                   key={Math.random() + entry.id}
                                 >
-                                  <SidebarMenuSubButton asChild>
+                                  <SidebarMenuSubButton
+                                    asChild
+                                    isActive={!isActive(entry.id)}
+                                  >
                                     <Link
                                       href={`/home/${collection.id}/${entry.id}`}
                                     >
                                       {entry.title}
                                     </Link>
                                   </SidebarMenuSubButton>
-                                  <SidebarMenuAction>
-                                    <MoreHorizontal />
-                                  </SidebarMenuAction>
+                                  <DropdownMenu>
+                                    <DropdownMenuTrigger asChild>
+                                      <SidebarMenuAction>
+                                        <MoreHorizontal />
+                                      </SidebarMenuAction>
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent>
+                                      <DropdownMenuGroup>
+                                        <DropdownMenuItem>
+                                          Favorite <Star className="ml-auto" />
+                                        </DropdownMenuItem>
+                                      </DropdownMenuGroup>
+                                      <DropdownMenuSeparator />
+                                      <DropdownMenuGroup>
+                                        <DropdownMenuItem
+                                          onClick={async () =>
+                                            deleteEntryMutation.mutate(entry.id)
+                                          }
+                                        >
+                                          Delete <XIcon className="ml-auto" />
+                                        </DropdownMenuItem>
+                                      </DropdownMenuGroup>
+                                    </DropdownMenuContent>
+                                  </DropdownMenu>
                                 </SidebarMenuSubItem>
                               ))}
                         </SidebarMenuSub>

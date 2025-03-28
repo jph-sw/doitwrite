@@ -28,3 +28,8 @@ export async function updateEntryContent(id: string, content: string) {
   ]);
   return res;
 }
+
+export async function deleteEntry(id: string) {
+  const res = await query("DELETE FROM entry WHERE id = $1", [id]);
+  return res;
+}
