@@ -7,6 +7,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "../ui/sidebar";
+import Link from "next/link";
 
 export function Home() {
   return (
@@ -15,9 +16,11 @@ export function Home() {
       <SidebarGroupContent>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton>
-              <HomeIcon />
-              Home
+            <SidebarMenuButton asChild>
+              <Link href={"/home"}>
+                <HomeIcon />
+                Home
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
