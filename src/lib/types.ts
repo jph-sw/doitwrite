@@ -11,3 +11,9 @@ export type Entry = {
   created_at: string;
   content: string;
 };
+
+export type Favorite = {
+  id: number;
+  entry_id: number;
+  user_id: string;
+};

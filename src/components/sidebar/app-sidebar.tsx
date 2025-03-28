@@ -52,11 +52,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
+import { Favorites } from "./favorites";
+import { authClient } from "@/lib/auth-client";
+import { Home } from "./home";
 
 export function AppSidebar() {
   const queryClient = getQueryClient();
   const pathname = usePathname();
-
+  const { data: session } = authClient.useSession();
   const { data: collections } = useQuery(collectionOptions);
   const { data: entries } = useQuery(entryOptions);
 
@@ -104,6 +107,22 @@ export function AppSidebar() {
     },
   });
 
+  const favoriteMutation = useMutation({
+    mutationFn: async (data: { user_id: string; entry_id: number }) => {
+      await fetch("/api/favorite", {
+        method: "POST",
+        body: JSON.stringify(data),
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["favorites"] });
+    },
+  });
+
+  if (!session) {
+    return "No user";
+  }
+
   const isCollectionPath = (collectionId: number): boolean => {
     const pattern = new RegExp(`^/home/${collectionId}(/.*)?$`);
     return pattern.test(pathname);
@@ -117,6 +136,8 @@ export function AppSidebar() {
   return (
     <Sidebar>
       <SidebarContent>
+        <Home />
+        <Favorites userId={session.user.id} />
         <SidebarGroup className="group-data-[collapsible=icon]:hidden">
           <SidebarGroupLabel>Collections</SidebarGroupLabel>
           <SidebarMenu>
@@ -183,7 +204,14 @@ export function AppSidebar() {
                                     </DropdownMenuTrigger>
                                     <DropdownMenuContent>
                                       <DropdownMenuGroup>
-                                        <DropdownMenuItem>
+                                        <DropdownMenuItem
+                                          onClick={() =>
+                                            favoriteMutation.mutate({
+                                              entry_id: entry.id,
+                                              user_id: session.user.id,
+                                            })
+                                          }
+                                        >
                                           Favorite <Star className="ml-auto" />
                                         </DropdownMenuItem>
                                       </DropdownMenuGroup>

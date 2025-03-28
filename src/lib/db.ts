@@ -27,3 +27,11 @@ pool.query(`
     color TEXT
   )
   `);
+
+pool.query(`
+  CREATE TABLE IF NOT EXISTS favorite (
+    id SERIAL PRIMARY KEY,
+    entry_id INTEGER NOT NULL,
+    user_id TEXT NOT NULL
+  )
+  `);
