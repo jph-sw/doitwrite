@@ -12,6 +12,10 @@
 
 .npmrc
 
+db.db
+bun.lock
+package-lock.json
+
 # testing
 /coverage
 
