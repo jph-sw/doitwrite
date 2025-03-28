@@ -18,3 +18,11 @@ export async function updateEntryTitle(id: string, title: string) {
 
   return res;
 }
+
+export async function updateEntryContent(id: string, content: string) {
+  const res = db
+    .prepare("UPDATE entry SET content = ? WHERE id = ?")
+    .run(content, id);
+
+  return res;
+}

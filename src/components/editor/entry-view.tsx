@@ -1,6 +1,10 @@
 "use client";
 
-import { getEntryById, updateEntryTitle } from "@/app/actions/entry";
+import {
+  getEntryById,
+  updateEntryContent,
+  updateEntryTitle,
+} from "@/app/actions/entry";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Input } from "../ui/input";
 import TiptapEditor from "./TiptapEditor";
@@ -9,12 +13,13 @@ import { FormEvent, useState } from "react";
 import { Button } from "../ui/button";
 import { Save, XIcon } from "lucide-react";
 import { getQueryClient } from "@/lib/get-query-client";
+import { debounce } from "lodash";
 
 export function EntryView({ entryId }: { entryId: string }) {
   const queryClient = getQueryClient();
   const [newTitle, setNewTitle] = useState<string>();
 
-  const { data, isPending, error } = useQuery({
+  const { data, isPending } = useQuery({
     queryKey: ["entry", entryId],
     queryFn: async () => await getEntryById(entryId),
   });
@@ -27,6 +32,16 @@ export function EntryView({ entryId }: { entryId: string }) {
       queryClient.invalidateQueries({ queryKey: ["entries"] });
     },
   });
+
+  const contentMutation = useMutation({
+    mutationFn: async (content: string) => {
+      await updateEntryContent(entryId, content);
+    },
+  });
+
+  const debouncedUpdate = debounce((value: string) => {
+    contentMutation.mutate(value);
+  }, 1500);
 
   return (
     <div className="">
@@ -64,7 +79,10 @@ export function EntryView({ entryId }: { entryId: string }) {
                 </div>
               )}
             </form>
-            <TiptapEditor defaultValue={data.content} />
+            <TiptapEditor
+              defaultValue={data.content}
+              onChange={(value) => debouncedUpdate(value)}
+            />
           </div>
         )
       )}

@@ -80,8 +80,7 @@ export const ToC = ({ items = [], editor }: ToCProps) => {
       editor.view.focus();
 
       if (history.pushState) {
-        // eslint-disable-line
-        history.pushState(null, "", `#${id}`); // eslint-disable-line
+        history.pushState(null, "", `#${id}`);
       }
 
       window.scrollTo({

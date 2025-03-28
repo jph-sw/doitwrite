@@ -12,10 +12,19 @@ import { Bold, Italic } from "lucide-react";
 
 const MemorizedToC = React.memo(ToC);
 
-const TiptapEditor = ({ defaultValue }: { defaultValue: string }) => {
+const TiptapEditor = ({
+  defaultValue,
+  onChange,
+}: {
+  defaultValue: string;
+  onChange: (value: string) => void;
+}) => {
   const [items, setItems] = useState<TableOfContentData>();
 
   const editor = useEditor({
+    onUpdate({ editor }) {
+      onChange(editor.getHTML());
+    },
     editorProps: {
       attributes: {
         class:

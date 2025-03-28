@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
     .prepare(
       "INSERT INTO entry (title, content, collection_id) VALUES (?, ?, ?)",
     )
-    .run("New Entry", "This is a new entry", collection_id);
+    .run("New Entry", "# This is a new entry", collection_id);
 
   return NextResponse.json(res);
 }

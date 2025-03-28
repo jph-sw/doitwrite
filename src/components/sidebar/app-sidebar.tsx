@@ -43,12 +43,8 @@ export function AppSidebar() {
   const queryClient = getQueryClient();
   const pathname = usePathname();
 
-  const { data: collections, isPending, error } = useQuery(collectionOptions);
-  const {
-    data: entries,
-    entriesIsPending,
-    entriesError,
-  } = useQuery(entryOptions);
+  const { data: collections } = useQuery(collectionOptions);
+  const { data: entries } = useQuery(entryOptions);
 
   const mutation = useMutation({
     mutationFn: async (data: { title: string; color: string }) => {
@@ -123,7 +119,7 @@ export function AppSidebar() {
                         <span className="sr-only">Toggle</span>
                       </SidebarMenuAction>
                     </CollapsibleTrigger>
-                    {entries?.length > 0 && (
+                    {entries && entries?.length > 0 && (
                       <CollapsibleContent>
                         <SidebarMenuSub>
                           {entries &&
