@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useEditor, EditorContent } from "@tiptap/react";
+import { useEditor, EditorContent, BubbleMenu } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Link from "@tiptap/extension-link";
 import { Button } from "@/components/ui/button"; // Adjust the import path
@@ -8,13 +8,20 @@ import TableOfContents, {
   TableOfContentData,
 } from "@tiptap-pro/extension-table-of-contents";
 import { ToC } from "./toc";
+import { Bold, Italic } from "lucide-react";
 
 const MemorizedToC = React.memo(ToC);
 
-const TiptapEditor = () => {
+const TiptapEditor = ({ defaultValue }: { defaultValue: string }) => {
   const [items, setItems] = useState<TableOfContentData>();
 
   const editor = useEditor({
+    editorProps: {
+      attributes: {
+        class:
+          "focus:outline-none px-12 py-2 w-full prose dark:prose-invert max-w-full",
+      },
+    },
     extensions: [
       StarterKit,
       Link,
@@ -25,7 +32,7 @@ const TiptapEditor = () => {
         },
       }),
     ],
-    content: "<p>Hello World!</p>",
+    content: defaultValue,
   });
 
   if (!editor) {
@@ -34,11 +41,26 @@ const TiptapEditor = () => {
 
   return (
     <div>
-      <Button onClick={() => editor.chain().focus().toggleBold().run()}>
-        Bold
-      </Button>
-      <div className="prose">
-        <EditorContent editor={editor} />
+      <div className="w-full flex">
+        <BubbleMenu editor={editor} tippyOptions={{ duration: 100 }}>
+          <div className="bg-card p-0.5 border flex gap-1 rounded-lg">
+            <Button
+              variant={"secondary"}
+              size={"icon"}
+              onClick={() => editor.chain().focus().toggleItalic().run()}
+            >
+              <Italic />
+            </Button>
+            <Button
+              variant={"secondary"}
+              size={"icon"}
+              onClick={() => editor.chain().focus().toggleBold().run()}
+            >
+              <Bold />
+            </Button>
+          </div>
+        </BubbleMenu>
+        <EditorContent editor={editor} className="w-3/4" />
         <MemorizedToC editor={editor} items={items} />
       </div>
     </div>

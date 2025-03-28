@@ -29,7 +29,7 @@ export const ToCItem = ({ item, onItemClick }: ToCItemProps) => {
 
   return (
     <div
-      className={`${item.isActive && !item.isScrolledOver ? "is-active" : ""} ${item.isScrolledOver ? "is-scrolled-over" : ""}`}
+      className={`${item.isActive && !item.isScrolledOver ? "is-active" : ""} ${item.isScrolledOver ? "is-scrolled-over" : ""} prose dark:prose-invert`}
       style={style}
     >
       <a

@@ -28,7 +28,7 @@ export default async function HomeLayout({
     <div>
       <SidebarProvider>
         <AppSidebar />
-        <main>{children}</main>
+        <main className="w-full">{children}</main>
       </SidebarProvider>
     </div>
   );

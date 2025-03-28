@@ -1,20 +1,11 @@
 "use client";
 
-import {
-  Calendar,
-  ChevronRight,
-  Home,
-  Inbox,
-  MoreHorizontal,
-  Search,
-  Settings,
-} from "lucide-react";
+import { ChevronRight, MoreHorizontal, Notebook } from "lucide-react";
 
 import {
   Sidebar,
   SidebarContent,
   SidebarGroup,
-  SidebarGroupContent,
   SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuAction,
@@ -28,14 +19,12 @@ import { collectionOptions, entryOptions } from "@/lib/query-options";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Collection } from "@/lib/types";
 import { Plus } from "lucide-react";
-import { FormEvent, useState } from "react";
 import { Input } from "../ui/input";
 import {
   Dialog,
   DialogClose,
   DialogContent,
   DialogFooter,
-  DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog";
@@ -48,12 +37,11 @@ import {
   CollapsibleTrigger,
 } from "../ui/collapsible";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 
 export function AppSidebar() {
   const queryClient = getQueryClient();
   const pathname = usePathname();
-  const router = useRouter();
 
   const { data: collections, isPending, error } = useQuery(collectionOptions);
   const {
@@ -101,7 +89,7 @@ export function AppSidebar() {
     <Sidebar>
       <SidebarContent>
         <SidebarGroup className="group-data-[collapsible=icon]:hidden">
-          <SidebarGroupLabel>Application</SidebarGroupLabel>
+          <SidebarGroupLabel>Collections</SidebarGroupLabel>
           <SidebarMenu>
             {collections &&
               collections.map((collection: Collection, i: number) => (
@@ -114,6 +102,7 @@ export function AppSidebar() {
                     <SidebarMenuButton tooltip={collection.title} asChild>
                       <CollapsibleTrigger asChild>
                         <Link href={"/home/" + collection.id.toString()}>
+                          <Notebook style={{ color: collection.color }} />
                           {collection.title}
                         </Link>
                       </CollapsibleTrigger>
@@ -134,31 +123,34 @@ export function AppSidebar() {
                         <span className="sr-only">Toggle</span>
                       </SidebarMenuAction>
                     </CollapsibleTrigger>
-                    <CollapsibleContent>
-                      <SidebarMenuSub>
-                        {entries &&
-                          entries
-                            .filter(
-                              (entry) => entry.collection_id === collection.id,
-                            )
-                            .map((entry) => (
-                              <SidebarMenuSubItem
-                                key={Math.random() + entry.id}
-                              >
-                                <SidebarMenuSubButton asChild>
-                                  <Link
-                                    href={`/home/${collection.id}/${entry.id}`}
-                                  >
-                                    {entry.title}
-                                  </Link>
-                                </SidebarMenuSubButton>
-                                <SidebarMenuAction>
-                                  <MoreHorizontal />
-                                </SidebarMenuAction>
-                              </SidebarMenuSubItem>
-                            ))}
-                      </SidebarMenuSub>
-                    </CollapsibleContent>
+                    {entries?.length > 0 && (
+                      <CollapsibleContent>
+                        <SidebarMenuSub>
+                          {entries &&
+                            entries
+                              .filter(
+                                (entry) =>
+                                  entry.collection_id === collection.id,
+                              )
+                              .map((entry) => (
+                                <SidebarMenuSubItem
+                                  key={Math.random() + entry.id}
+                                >
+                                  <SidebarMenuSubButton asChild>
+                                    <Link
+                                      href={`/home/${collection.id}/${entry.id}`}
+                                    >
+                                      {entry.title}
+                                    </Link>
+                                  </SidebarMenuSubButton>
+                                  <SidebarMenuAction>
+                                    <MoreHorizontal />
+                                  </SidebarMenuAction>
+                                </SidebarMenuSubItem>
+                              ))}
+                        </SidebarMenuSub>
+                      </CollapsibleContent>
+                    )}
                   </SidebarMenuItem>
                 </Collapsible>
               ))}

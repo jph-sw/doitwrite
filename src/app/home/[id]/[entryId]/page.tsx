@@ -1,3 +1,5 @@
+import { EntryView } from "@/components/editor/entry-view";
+
 export default async function Page({
   params,
 }: {
@@ -8,6 +10,7 @@ export default async function Page({
   return (
     <div>
       {id}, {entryId}
+      <EntryView entryId={entryId} />
     </div>
   );
 }
