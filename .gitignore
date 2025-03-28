@@ -16,6 +16,7 @@ db.db
 bun.lock
 package-lock.json
 docker-compose.yml
+better-auth_migrations
 
 # testing
 /coverage
