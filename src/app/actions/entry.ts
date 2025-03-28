@@ -1,6 +1,6 @@
 "use server";
 
-import { pool, query } from "@/lib/db";
+import { query } from "@/lib/db";
 import { Entry } from "@/lib/types";
 
 export async function getEntryById(id: string): Promise<Entry | null> {
