@@ -9,7 +9,6 @@ export default async function Page({
 
   return (
     <div>
-      {id}, {entryId}
       <EntryView entryId={entryId} />
     </div>
   );

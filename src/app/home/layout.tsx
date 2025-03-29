@@ -5,6 +5,7 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { getQueryClient } from "@/lib/get-query-client";
 import { collectionOptions, entryOptions } from "@/lib/query-options";
+import { CommandDialogDemo } from "@/components/search";
 
 export default async function HomeLayout({
   children,

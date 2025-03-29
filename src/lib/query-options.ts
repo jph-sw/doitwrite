@@ -1,11 +1,11 @@
 import { queryOptions } from "@tanstack/react-query";
-import { Entry } from "./types";
+import { Entry, Collection } from "./types";
 
 export const collectionOptions = queryOptions({
   queryKey: ["collections"],
   queryFn: async () => {
     const res = await fetch("/api/collection");
-    return res.json();
+    return res.json() as Promise<Collection[]>;
   },
 });
 

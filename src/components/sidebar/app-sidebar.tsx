@@ -247,6 +247,8 @@ export function AppSidebar() {
                     const title = formData.get("title") as string;
                     const color = formData.get("color") as string;
 
+                    console.log("New Collection:", title);
+
                     mutation.mutate({ title, color });
                   }}
                 >

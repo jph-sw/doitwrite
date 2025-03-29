@@ -4,10 +4,12 @@ import {
   SidebarGroupContent,
   SidebarGroupLabel,
   SidebarMenu,
+  SidebarMenuBadge,
   SidebarMenuButton,
   SidebarMenuItem,
 } from "../ui/sidebar";
 import Link from "next/link";
+import { CommandDialogDemo } from "../search";
 
 export function Home() {
   return (
@@ -23,6 +25,7 @@ export function Home() {
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
+          <CommandDialogDemo />
         </SidebarMenu>
       </SidebarGroupContent>
     </SidebarGroup>
