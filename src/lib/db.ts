@@ -10,6 +10,7 @@ export const query = <Result extends QueryResultRow>(
 ) => {
   return pool.query<Result>(text, params);
 };
+
 pool.query(`
   CREATE TABLE IF NOT EXISTS entry (
     id SERIAL PRIMARY KEY,

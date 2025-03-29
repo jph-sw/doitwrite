@@ -128,11 +128,6 @@ export function AppSidebar() {
     return pattern.test(pathname);
   };
 
-  const isActive = (entryId: number): boolean => {
-    const pattern = new RegExp(`/home/[^/]+/${entryId}$`);
-    return pattern.test(window.location.pathname);
-  };
-
   return (
     <Sidebar>
       <SidebarContent>
@@ -186,10 +181,7 @@ export function AppSidebar() {
                                 <SidebarMenuSubItem
                                   key={Math.random() + entry.id}
                                 >
-                                  <SidebarMenuSubButton
-                                    asChild
-                                    isActive={!isActive(entry.id)}
-                                  >
+                                  <SidebarMenuSubButton asChild>
                                     <Link
                                       href={`/home/${collection.id}/${entry.id}`}
                                     >
