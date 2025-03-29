@@ -5,7 +5,7 @@ export default async function Page({
 }: {
   params: Promise<{ id: string; entryId: string }>;
 }) {
-  const { id, entryId } = await params;
+  const { entryId } = await params;
 
   return (
     <div>

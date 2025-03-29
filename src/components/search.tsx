@@ -1,15 +1,7 @@
 "use client";
 
 import * as React from "react";
-import {
-  Calculator,
-  Calendar,
-  CreditCard,
-  Search,
-  Settings,
-  Smile,
-  User,
-} from "lucide-react";
+import { Search } from "lucide-react";
 
 import {
   CommandDialog,
@@ -18,8 +10,6 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-  CommandSeparator,
-  CommandShortcut,
 } from "@/components/ui/command";
 import { collectionOptions, entryOptions } from "@/lib/query-options";
 import { useQuery } from "@tanstack/react-query";
