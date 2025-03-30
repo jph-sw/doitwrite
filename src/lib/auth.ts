@@ -12,5 +12,3 @@ export const auth = betterAuth({
     },
   },
 });
-
-// deploy
