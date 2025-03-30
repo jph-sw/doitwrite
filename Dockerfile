@@ -13,7 +13,7 @@ FROM base AS dependencies
 # IMPORTANT:  Pass NPM_TOKEN as a build argument.  Example:
 # docker build --build-arg NPM_TOKEN=$NPM_TOKEN .
 ARG NPM_TOKEN
-RUN echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > .npmrc
+RUN echo "@tiptap-pro:registry=https://registry.tiptap.dev/\n//registry.tiptap.dev/:_authToken=${NPM_TOKEN}" > .npmrc
 
 # If your .npmrc has other content beyond the token, use a more complex echo:
 # ARG NPM_REGISTRY  # Define more ARGs for other .npmrc values
