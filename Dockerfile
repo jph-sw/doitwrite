@@ -21,7 +21,7 @@ RUN echo "@tiptap-pro:registry=https://registry.tiptap.dev/\n//registry.tiptap.d
 # RUN echo "registry=$NPM_REGISTRY\n_authToken=$NPM_TOKEN\nemail=$NPM_EMAIL\nalways-auth=true" > .npmrc
 
 COPY package.json package-lock.json ./
-RUN npm ci
+RUN npm clean-install
 
 # Build
 FROM base AS build
