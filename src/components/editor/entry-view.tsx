@@ -1,6 +1,6 @@
 "use client";
 
-import { getEntryById, updateEntryContent } from "@/app/actions/entry";
+import { getEntryById } from "@/app/actions/entry";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Input } from "../ui/input";
 import TiptapEditor from "./TiptapEditor";
