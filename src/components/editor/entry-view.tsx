@@ -37,13 +37,22 @@ export function EntryView({ entryId }: { entryId: string }) {
 
   const contentMutation = useMutation({
     mutationFn: async (content: string) => {
-      await updateEntryContent(entryId, content);
+      await fetch("/api/entry/content", {
+        method: "POST",
+        body: JSON.stringify({ content, entryId }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["entry", entryId] });
     },
   });
 
   const debouncedUpdate = debounce((value: string) => {
     contentMutation.mutate(value);
-  }, 1500);
+  }, 1000);
 
   return (
     <div className="">

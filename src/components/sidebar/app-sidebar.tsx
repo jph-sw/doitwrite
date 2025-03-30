@@ -171,56 +171,54 @@ export function AppSidebar() {
                     {entries && entries?.length > 0 && (
                       <CollapsibleContent>
                         <SidebarMenuSub>
-                          {entries &&
-                            entries
-                              .filter(
-                                (entry) =>
-                                  entry.collection_id === collection.id,
-                              )
-                              .map((entry) => (
-                                <SidebarMenuSubItem
-                                  key={Math.random() + entry.id}
-                                >
-                                  <SidebarMenuSubButton asChild>
-                                    <Link
-                                      href={`/home/${collection.id}/${entry.id}`}
-                                    >
-                                      {entry.title}
-                                    </Link>
-                                  </SidebarMenuSubButton>
-                                  <DropdownMenu>
-                                    <DropdownMenuTrigger asChild>
-                                      <SidebarMenuAction>
-                                        <MoreHorizontal />
-                                      </SidebarMenuAction>
-                                    </DropdownMenuTrigger>
-                                    <DropdownMenuContent>
-                                      <DropdownMenuGroup>
-                                        <DropdownMenuItem
-                                          onClick={() =>
-                                            favoriteMutation.mutate({
-                                              entry_id: entry.id,
-                                              user_id: session.user.id,
-                                            })
-                                          }
-                                        >
-                                          Favorite <Star className="ml-auto" />
-                                        </DropdownMenuItem>
-                                      </DropdownMenuGroup>
-                                      <DropdownMenuSeparator />
-                                      <DropdownMenuGroup>
-                                        <DropdownMenuItem
-                                          onClick={async () =>
-                                            deleteEntryMutation.mutate(entry.id)
-                                          }
-                                        >
-                                          Delete <XIcon className="ml-auto" />
-                                        </DropdownMenuItem>
-                                      </DropdownMenuGroup>
-                                    </DropdownMenuContent>
-                                  </DropdownMenu>
-                                </SidebarMenuSubItem>
-                              ))}
+                          {entries
+                            .filter(
+                              (entry) => entry.collection_id === collection.id,
+                            )
+                            .map((entry) => (
+                              <SidebarMenuSubItem
+                                key={Math.random() + entry.id}
+                              >
+                                <SidebarMenuSubButton asChild>
+                                  <Link
+                                    href={`/home/${collection.id}/${entry.id}`}
+                                  >
+                                    {entry.title}
+                                  </Link>
+                                </SidebarMenuSubButton>
+                                <DropdownMenu>
+                                  <DropdownMenuTrigger asChild>
+                                    <SidebarMenuAction>
+                                      <MoreHorizontal />
+                                    </SidebarMenuAction>
+                                  </DropdownMenuTrigger>
+                                  <DropdownMenuContent>
+                                    <DropdownMenuGroup>
+                                      <DropdownMenuItem
+                                        onClick={() =>
+                                          favoriteMutation.mutate({
+                                            entry_id: entry.id,
+                                            user_id: session.user.id,
+                                          })
+                                        }
+                                      >
+                                        Favorite <Star className="ml-auto" />
+                                      </DropdownMenuItem>
+                                    </DropdownMenuGroup>
+                                    <DropdownMenuSeparator />
+                                    <DropdownMenuGroup>
+                                      <DropdownMenuItem
+                                        onClick={async () =>
+                                          deleteEntryMutation.mutate(entry.id)
+                                        }
+                                      >
+                                        Delete <XIcon className="ml-auto" />
+                                      </DropdownMenuItem>
+                                    </DropdownMenuGroup>
+                                  </DropdownMenuContent>
+                                </DropdownMenu>
+                              </SidebarMenuSubItem>
+                            ))}
                         </SidebarMenuSub>
                       </CollapsibleContent>
                     )}
