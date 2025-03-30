@@ -19,6 +19,8 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
           push: true
           build-args: |
             NPM_TOKEN=${{ secrets.NPM_TOKEN }}  # Pass the GitHub Secret
