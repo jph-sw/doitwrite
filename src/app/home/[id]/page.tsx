@@ -1,7 +1,5 @@
 import { DangerSettings } from "@/components/collection/danger-settings";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { FormEvent } from "react";
+import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default async function Page({
   params,
