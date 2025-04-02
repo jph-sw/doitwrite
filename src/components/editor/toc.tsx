@@ -36,6 +36,7 @@ export const ToCItem = ({ item, onItemClick }: ToCItemProps) => {
         href={`#${item.id}`}
         onClick={(e) => onItemClick(e, item.id)}
         data-item-index={item.itemIndex}
+        className="no-underline hover:underline"
       >
         {item.textContent}
       </a>
@@ -92,9 +93,12 @@ export const ToC = ({ items = [], editor }: ToCProps) => {
 
   return (
     <>
-      {items.map((item) => (
-        <ToCItem onItemClick={onItemClick} key={item.id} item={item} />
-      ))}
+      <div className="flex flex-col">
+        <span className="text-foreground/80 font-semibold">Contents</span>
+        {items.map((item) => (
+          <ToCItem onItemClick={onItemClick} key={item.id} item={item} />
+        ))}
+      </div>
     </>
   );
 };

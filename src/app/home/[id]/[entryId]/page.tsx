@@ -8,7 +8,7 @@ export default async function Page({
   const { entryId } = await params;
 
   return (
-    <div>
+    <div className="">
       <EntryView entryId={entryId} />
     </div>
   );
