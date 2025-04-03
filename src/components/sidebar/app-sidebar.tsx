@@ -2,15 +2,18 @@
 
 import {
   ChevronRight,
+  Moon,
   MoreHorizontal,
   Notebook,
   Star,
+  Sun,
   XIcon,
 } from "lucide-react";
 
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarGroupLabel,
   SidebarMenu,
@@ -55,6 +58,7 @@ import {
 import { Favorites } from "./favorites";
 import { authClient } from "@/lib/auth-client";
 import { Home } from "./home";
+import { useTheme } from "next-themes";
 
 export function AppSidebar() {
   const queryClient = getQueryClient();
@@ -62,6 +66,8 @@ export function AppSidebar() {
   const { data: session } = authClient.useSession();
   const { data: collections } = useQuery(collectionOptions);
   const { data: entries } = useQuery(entryOptions);
+
+  const { theme, setTheme } = useTheme();
 
   const mutation = useMutation({
     mutationFn: async (data: { title: string; color: string }) => {
@@ -269,6 +275,17 @@ export function AppSidebar() {
           </SidebarMenu>
         </SidebarGroup>
       </SidebarContent>
+      <SidebarFooter>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              onClick={() => setTheme(theme == "dark" ? "light" : "dark")}
+            >
+              {theme == "light" ? <Sun /> : <Moon />} Toggle Theme
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarFooter>
     </Sidebar>
   );
 }
