@@ -12,6 +12,10 @@ export const query = <Result extends QueryResultRow>(
 };
 
 pool.query(`
+  CREATE DATABASE IF NOT EXISTS doitwrite
+  `);
+
+pool.query(`
   CREATE TABLE IF NOT EXISTS entry (
     id SERIAL PRIMARY KEY,
     collection_id INTEGER NOT NULL,

@@ -9,6 +9,13 @@ import TableOfContents, {
 } from "@tiptap-pro/extension-table-of-contents";
 import { ToC } from "./toc";
 import { Bold, Italic } from "lucide-react";
+import {
+  enableKeyboardNavigation,
+  Slash,
+  SlashCmd,
+  SlashCmdProvider,
+} from "@harshtalks/slash-tiptap";
+import { suggestions } from "./suggestion/suggestion";
 
 const MemorizedToC = React.memo(ToC);
 
@@ -26,6 +33,9 @@ const TiptapEditor = ({
       onChange(editor.getHTML());
     },
     editorProps: {
+      handleDOMEvents: {
+        keydown: (_, v) => enableKeyboardNavigation(v),
+      },
       attributes: {
         class:
           "focus:outline-none px-12 py-2 w-full prose dark:prose-invert max-w-full",
@@ -38,6 +48,11 @@ const TiptapEditor = ({
         getIndex: getHierarchicalIndexes,
         onUpdate(content) {
           setItems(content);
+        },
+      }),
+      Slash.configure({
+        suggestion: {
+          items: () => suggestions,
         },
       }),
     ],
@@ -69,7 +84,28 @@ const TiptapEditor = ({
             </Button>
           </div>
         </BubbleMenu>
-        <EditorContent editor={editor} className="w-3/4" />
+        <SlashCmdProvider>
+          <EditorContent editor={editor} className="w-3/4" />
+          <SlashCmd.Root editor={editor}>
+            <SlashCmd.Cmd>
+              <SlashCmd.Empty>None</SlashCmd.Empty>
+              <SlashCmd.List className="bg-secondary p-0.5 rounded-lg space-y-2">
+                {suggestions.map((item) => (
+                  <SlashCmd.Item
+                    className="px-1 rounded-md space-x-2 aria-selected:bg-background"
+                    value={item.title}
+                    onCommand={(val) => {
+                      item.command(val);
+                    }}
+                    key={item.title}
+                  >
+                    <p>{item.title}</p>
+                  </SlashCmd.Item>
+                ))}
+              </SlashCmd.List>
+            </SlashCmd.Cmd>
+          </SlashCmd.Root>
+        </SlashCmdProvider>
         <MemorizedToC editor={editor} items={items} />
       </div>
     </div>
