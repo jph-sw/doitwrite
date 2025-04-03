@@ -2,9 +2,12 @@
 
 import {
   ChevronRight,
+  LogOutIcon,
   Moon,
   MoreHorizontal,
+  MoreVerticalIcon,
   Notebook,
+  Settings,
   Star,
   Sun,
   XIcon,
@@ -23,6 +26,7 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import { collectionOptions, entryOptions } from "@/lib/query-options";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -52,6 +56,7 @@ import {
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
+  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
@@ -59,6 +64,7 @@ import { Favorites } from "./favorites";
 import { authClient } from "@/lib/auth-client";
 import { Home } from "./home";
 import { useTheme } from "next-themes";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 export function AppSidebar() {
   const queryClient = getQueryClient();
@@ -68,6 +74,8 @@ export function AppSidebar() {
   const { data: entries } = useQuery(entryOptions);
 
   const { theme, setTheme } = useTheme();
+
+  const { isMobile } = useSidebar();
 
   const mutation = useMutation({
     mutationFn: async (data: { title: string; color: string }) => {
@@ -278,11 +286,74 @@ export function AppSidebar() {
       <SidebarFooter>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton
-              onClick={() => setTheme(theme == "dark" ? "light" : "dark")}
-            >
-              {theme == "light" ? <Sun /> : <Moon />} Toggle Theme
-            </SidebarMenuButton>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <SidebarMenuButton
+                  size="lg"
+                  className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+                >
+                  <Avatar className="h-8 w-8 rounded-lg grayscale">
+                    <AvatarImage
+                      src={session.user.image!}
+                      alt={session.user.name}
+                    />
+                    <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                  </Avatar>
+                  <div className="grid flex-1 text-left text-sm leading-tight">
+                    <span className="truncate font-medium">
+                      {session.user.name}
+                    </span>
+                    <span className="truncate text-xs text-muted-foreground">
+                      {session.user.email}
+                    </span>
+                  </div>
+                  <MoreVerticalIcon className="ml-auto size-4" />
+                </SidebarMenuButton>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent
+                className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
+                side={isMobile ? "bottom" : "right"}
+                align="end"
+                sideOffset={4}
+              >
+                <DropdownMenuLabel className="p-0 font-normal">
+                  <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
+                    <Avatar className="h-8 w-8 rounded-lg">
+                      <AvatarImage
+                        src={session.user.image!}
+                        alt={session.user.name}
+                      />
+                      <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                    </Avatar>
+                    <div className="grid flex-1 text-left text-sm leading-tight">
+                      <span className="truncate font-medium">
+                        {session.user.name}
+                      </span>
+                      <span className="truncate text-xs text-muted-foreground">
+                        {session.user.email}
+                      </span>
+                    </div>
+                  </div>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuGroup>
+                  <DropdownMenuItem>
+                    <Settings />
+                    Preferences
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => setTheme(theme == "dark" ? "light" : "dark")}
+                  >
+                    {theme == "light" ? <Sun /> : <Moon />} Toggle Theme
+                  </DropdownMenuItem>
+                </DropdownMenuGroup>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={() => authClient.signOut()}>
+                  <LogOutIcon />
+                  Log out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarFooter>
