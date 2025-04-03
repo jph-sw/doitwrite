@@ -2,7 +2,6 @@
 
 import { getEntryById } from "@/app/actions/entry";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { Input } from "../ui/input";
 import TiptapEditor from "./TiptapEditor";
 import { Skeleton } from "../ui/skeleton";
 import { FormEvent, useState } from "react";
@@ -60,37 +59,42 @@ export function EntryView({ entryId }: { entryId: string }) {
         <Skeleton className="w-full h-12 m-4" />
       ) : (
         data && (
-          <div>
-            <form
-              className="p-4 flex gap-2"
-              onSubmit={(e: FormEvent) => {
-                e.preventDefault();
-                console.log("Saving title:", newTitle); // Add this line
-                titleMutation.mutate(newTitle ?? "New Entry");
-                setNewTitle("");
-              }}
-            >
-              <Input
-                className="w-[300px]"
-                defaultValue={data.title}
-                onChange={(e) => setNewTitle(e.target.value)}
-              />
-              {newTitle && newTitle.length > 0 && (
-                <div className="flex gap-2">
-                  <Button size={"icon"} type="submit">
-                    <Save />
-                  </Button>
-                  <Button
-                    size={"icon"}
-                    type="button"
-                    variant={"secondary"}
-                    onClick={() => setNewTitle("")}
-                  >
-                    <XIcon />
-                  </Button>
-                </div>
-              )}
-            </form>
+          <div className="py-8">
+            <div className="text-xl flex flex-col mb-4">
+              <form
+                className="flex"
+                onSubmit={(e: FormEvent) => {
+                  e.preventDefault();
+                  console.log("Saving title:", newTitle); // Add this line
+                  titleMutation.mutate(newTitle ?? "New Entry");
+                  setNewTitle("");
+                }}
+              >
+                <input
+                  defaultValue={data.title}
+                  className="text-xl focus-visible:outline-none"
+                  onChange={(e) => setNewTitle(e.target.value)}
+                />
+                {newTitle && newTitle.length > 0 && (
+                  <div className="flex gap-2">
+                    <Button size={"icon"} type="submit">
+                      <Save />
+                    </Button>
+                    <Button
+                      size={"icon"}
+                      type="button"
+                      variant={"secondary"}
+                      onClick={() => setNewTitle("")}
+                    >
+                      <XIcon />
+                    </Button>
+                  </div>
+                )}
+              </form>
+              <span className="text-sm text-foreground/70">
+                {new Date(data.created_at.toString()).toDateString()}
+              </span>
+            </div>
             <TiptapEditor
               defaultValue={data.content}
               onChange={(value) => debouncedUpdate(value)}

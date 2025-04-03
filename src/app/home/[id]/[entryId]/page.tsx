@@ -8,7 +8,7 @@ export default async function Page({
   const { entryId } = await params;
 
   return (
-    <div className="">
+    <div className="container mx-auto px-4 md:px-24">
       <EntryView entryId={entryId} />
     </div>
   );

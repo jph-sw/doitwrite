@@ -38,7 +38,7 @@ const TiptapEditor = ({
       },
       attributes: {
         class:
-          "focus:outline-none px-12 py-2 w-full prose dark:prose-invert max-w-full",
+          "focus:outline-none py-2 w-full prose dark:prose-invert max-w-full",
       },
     },
     extensions: [
