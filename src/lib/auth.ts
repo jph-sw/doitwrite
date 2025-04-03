@@ -1,5 +1,6 @@
 import { betterAuth } from "better-auth";
 import { Pool } from "pg";
+import { organization } from "better-auth/plugins";
 
 export const auth = betterAuth({
   database: new Pool({
@@ -11,4 +12,5 @@ export const auth = betterAuth({
       clientSecret: process.env.DISCORD_CLIENT_SECRET as string,
     },
   },
+  plugins: [organization()],
 });
