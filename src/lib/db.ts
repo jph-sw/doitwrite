@@ -21,6 +21,8 @@ pool.query(`
     collection_id INTEGER NOT NULL,
     title TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_by TEXT,
     content TEXT NOT NULL
   )
   `);
