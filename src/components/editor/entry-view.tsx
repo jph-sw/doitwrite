@@ -9,9 +9,11 @@ import { Button } from "../ui/button";
 import { Save, XIcon } from "lucide-react";
 import { getQueryClient } from "@/lib/get-query-client";
 import { debounce } from "lodash";
+import { authClient } from "@/lib/auth-client";
 
 export function EntryView({ entryId }: { entryId: string }) {
   const queryClient = getQueryClient();
+  const { data: session } = authClient.useSession();
   const [newTitle, setNewTitle] = useState<string>();
 
   const { data, isPending } = useQuery({
@@ -38,7 +40,11 @@ export function EntryView({ entryId }: { entryId: string }) {
     mutationFn: async (content: string) => {
       await fetch("/api/entry/content", {
         method: "POST",
-        body: JSON.stringify({ content, entryId }),
+        body: JSON.stringify({
+          content,
+          entryId,
+          updated_by: session?.user.id,
+        }),
         headers: {
           "Content-Type": "application/json",
         },

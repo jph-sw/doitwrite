@@ -7,5 +7,12 @@ export default function Home() {
   const { data: organizations } = authClient.useListOrganizations();
 
   console.log(organizations);
-  return redirect("/home");
+
+  if (organizations?.length == 0) {
+    redirect("/organizations/new");
+  } else {
+    redirect("/home");
+  }
+
+  return "";
 }
