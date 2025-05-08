@@ -14,7 +14,5 @@ export default function Home() {
     redirect("/home");
   }
 
-  // deploy
-
   return "";
 }
