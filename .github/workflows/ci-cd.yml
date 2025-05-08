@@ -36,8 +36,14 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20" # Specify your Node.js version
-          cache: "npm" # Cache npm dependencies
+          node-version: "20" # Or your desired Node.js version
+          cache: "npm"
+          # 👇 Add these lines for private registry authentication
+          registry-url: "https://registry.tiptap.dev/" # IMPORTANT: Change this!
+          # scope: '@your-scope' # Optional: if your private packages are under a specific scope
+        env:
+          # This environment variable is used by setup-node to configure .npmrc
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Install dependencies
         run: npm ci # Clean install, faster and more reliable for CI
