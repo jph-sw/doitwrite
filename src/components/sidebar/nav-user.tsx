@@ -1,8 +1,8 @@
 "use client";
 
-import { ChevronsUpDown, LogOut } from "lucide-react";
+import { ChevronsUpDown, LogOut, SettingsIcon } from "lucide-react";
 
-import { useRouteContext, useRouter } from "@tanstack/react-router";
+import { Link, useRouteContext, useRouter } from "@tanstack/react-router";
 import { User } from "better-auth";
 import authClient from "~/lib/auth-client";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
@@ -69,6 +69,12 @@ export function NavUser({ user }: { user: User }) {
 
             <DropdownMenuSeparator />
             <NavThemeToggle />
+            <DropdownMenuItem asChild>
+              <Link to="/app/settings">
+                <SettingsIcon />
+                Settings
+              </Link>
+            </DropdownMenuItem>
             <DropdownMenuItem
               onClick={async () => {
                 await authClient.signOut();

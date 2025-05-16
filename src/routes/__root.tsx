@@ -14,6 +14,7 @@ import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 
 import { auth } from "~/lib/server/auth";
 import appCss from "~/lib/styles/app.css?url";
+import { getTeams } from "./app/settings";
 
 const getUser = createServerFn({ method: "GET" }).handler(async () => {
   const { headers } = getWebRequest()!;
@@ -45,7 +46,13 @@ export const Route = createRootRouteWithContext<{
       queryKey: ["session"],
       queryFn: ({ signal }) => getSession({ signal }),
     });
-    return { user, session };
+
+    const teams = await context.queryClient.fetchQuery({
+      queryKey: ["teams", user?.id],
+      queryFn: () => getTeams({ data: user?.id || "" }),
+    });
+
+    return { user, session, teams };
   },
   head: () => ({
     meta: [
@@ -57,7 +64,7 @@ export const Route = createRootRouteWithContext<{
         content: "width=device-width, initial-scale=1",
       },
       {
-        title: "React TanStarter",
+        title: "doitwrite",
       },
       {
         name: "description",

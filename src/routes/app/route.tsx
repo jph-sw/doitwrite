@@ -4,9 +4,6 @@ import { SidebarProvider, SidebarTrigger } from "~/components/ui/sidebar";
 
 export const Route = createFileRoute("/app")({
   component: RouteComponent,
-  loader: ({ context }) => {
-    return { user: context.user, session: context.session };
-  },
   beforeLoad: async ({ context }) => {
     if (!context.user) {
       throw redirect({ to: "/login" });
@@ -16,13 +13,16 @@ export const Route = createFileRoute("/app")({
     // https://tanstack.com/start/latest/docs/framework/react/examples/start-basic-react-query
     // https://tanstack.com/router/latest/docs/framework/react/guide/external-data-loading
   },
+  loader: async ({ context }) => {
+    return { user: context.user, session: context.session, teams: context.teams };
+  },
 });
 
 function RouteComponent() {
-  const { user, session } = Route.useLoaderData();
+  const { user, teams } = Route.useLoaderData();
   return (
     <SidebarProvider>
-      <AppSidebar user={user!} session={session!} />
+      <AppSidebar user={user!} teams={teams!} />
       <div>
         <SidebarTrigger />
         <Outlet />

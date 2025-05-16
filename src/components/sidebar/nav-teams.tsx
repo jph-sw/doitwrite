@@ -1,0 +1,82 @@
+import { useRouteContext } from "@tanstack/react-router";
+import { User } from "better-auth";
+import { ChevronRight, Plus } from "lucide-react";
+import { createCollection } from "~/lib/collections";
+import { team } from "~/lib/server/schema";
+import { Button } from "../ui/button";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "../ui/collapsible";
+import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
+import { Input } from "../ui/input";
+import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "../ui/sidebar";
+import { NavCollections } from "./nav-collections";
+
+export function NavTeams({
+  teams,
+  user,
+}: {
+  teams: (typeof team.$inferSelect)[];
+  user: User;
+}) {
+  const { queryClient } = useRouteContext({ from: "__root__" });
+
+  return (
+    <SidebarMenu>
+      {teams.map((team) => {
+        return (
+          <Collapsible id={team.id} key={team.id} className="group/collapsible">
+            <SidebarMenuItem>
+              <CollapsibleTrigger asChild>
+                <SidebarMenuButton tooltip={team.name} className="flex justify-between">
+                  <div className="flex items-center gap-1">
+                    <span className="h-2 w-2 rounded-full bg-green-300"></span>
+                    <span>{team.name}</span>
+                  </div>
+                  <div
+                    className="flex items-center gap-1"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <button
+                          type="button"
+                          className="hover:bg-secondary/50 cursor-pointer opacity-0 transition-opacity group-hover/collapsible:opacity-100"
+                        >
+                          <Plus className="h-4 w-4" />
+                        </button>
+                      </DialogTrigger>
+                      <DialogContent>
+                        <form
+                          onSubmit={async (event) => {
+                            event.preventDefault();
+                            const formData = new FormData(event.currentTarget);
+
+                            const response = await createCollection({ data: formData });
+
+                            queryClient.invalidateQueries({ queryKey: ["collections"] });
+
+                            console.log(response);
+                          }}
+                        >
+                          <Input name="name" placeholder="Name" />
+                          <Input name="color" type="color" />
+                          <input type="hidden" name="team_id" value={team.id} />
+                          <input type="hidden" name="created_by" value={user.id} />
+                          <input type="hidden" name="updated_by" value={user.id} />
+                          <Button type="submit">Create</Button>
+                        </form>
+                      </DialogContent>
+                    </Dialog>
+                    <ChevronRight className="ml-auto h-4 w-4 transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                  </div>
+                </SidebarMenuButton>
+              </CollapsibleTrigger>
+              <CollapsibleContent>
+                <NavCollections teamId={team.id} />
+              </CollapsibleContent>
+            </SidebarMenuItem>
+          </Collapsible>
+        );
+      })}
+    </SidebarMenu>
+  );
+}

@@ -1,10 +1,8 @@
-import { Calendar, Home, Inbox, Search, Settings } from "lucide-react";
+import { Home } from "lucide-react";
 
-import { useQuery } from "@tanstack/react-query";
-import { useRouteContext } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 import { User } from "better-auth";
-import authClient from "~/lib/auth-client";
-import { Session } from "~/lib/server/auth";
+import { team } from "~/lib/server/schema";
 import {
   Sidebar,
   SidebarContent,
@@ -17,55 +15,29 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "../ui/sidebar";
+import { NavTeams } from "./nav-teams";
 import { NavUser } from "./nav-user";
 
 // Menu items.
 const items = [
   {
     title: "Home",
-    url: "#",
+    url: "/app",
     icon: Home,
-  },
-  {
-    title: "Inbox",
-    url: "#",
-    icon: Inbox,
-  },
-  {
-    title: "Calendar",
-    url: "#",
-    icon: Calendar,
-  },
-  {
-    title: "Search",
-    url: "#",
-    icon: Search,
-  },
-  {
-    title: "Settings",
-    url: "#",
-    icon: Settings,
   },
 ];
 
-export function AppSidebar({ user, session }: { user: User; session: Session }) {
-  const { queryClient } = useRouteContext({ from: "__root__" });
-
-  const { data: organization } = useQuery({
-    queryKey: ["organization", session.activeOrganizationId],
-    queryFn: async () =>
-      await authClient.organization.getFullOrganization({
-        query: { organizationId: session.activeOrganizationId! },
-      }),
-    enabled: session.activeOrganizationId != null,
-  });
-
+export function AppSidebar({
+  user,
+  teams,
+}: {
+  user: User;
+  teams: (typeof team.$inferSelect)[];
+}) {
   return (
     <Sidebar>
       <SidebarHeader>
-        <SidebarMenu>
-          <SidebarMenuItem>{organization?.data?.name ?? "Personal"}</SidebarMenuItem>
-        </SidebarMenu>
+        <SidebarMenu></SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
@@ -75,14 +47,20 @@ export function AppSidebar({ user, session }: { user: User; session: Session }) 
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
-                    <a href={item.url}>
+                    <Link to={item.url}>
                       <item.icon />
                       <span>{item.title}</span>
-                    </a>
+                    </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
             </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+        <SidebarGroup>
+          <SidebarGroupLabel>Teams</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <NavTeams teams={teams} user={user} />
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
