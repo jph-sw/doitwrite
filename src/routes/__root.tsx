@@ -19,7 +19,16 @@ const getUser = createServerFn({ method: "GET" }).handler(async () => {
   const { headers } = getWebRequest()!;
   const session = await auth.api.getSession({ headers });
 
+  console.log(session?.session);
+
   return session?.user || null;
+});
+
+const getSession = createServerFn({ method: "GET" }).handler(async () => {
+  const { headers } = getWebRequest()!;
+  const session = await auth.api.getSession({ headers });
+
+  return session?.session || null;
 });
 
 export const Route = createRootRouteWithContext<{
@@ -31,7 +40,12 @@ export const Route = createRootRouteWithContext<{
       queryKey: ["user"],
       queryFn: ({ signal }) => getUser({ signal }),
     }); // we're using react-query for caching, see router.tsx
-    return { user };
+
+    const session = await context.queryClient.fetchQuery({
+      queryKey: ["session"],
+      queryFn: ({ signal }) => getSession({ signal }),
+    });
+    return { user, session };
   },
   head: () => ({
     meta: [

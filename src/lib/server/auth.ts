@@ -1,5 +1,6 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import { organization } from "better-auth/plugins";
 import { reactStartCookies } from "better-auth/react-start";
 
 import { db } from "./db";
@@ -11,7 +12,8 @@ export const auth = betterAuth({
   }),
 
   // https://www.better-auth.com/docs/integrations/tanstack#usage-tips
-  plugins: [reactStartCookies()],
+
+  plugins: [organization(), reactStartCookies()],
 
   // https://www.better-auth.com/docs/concepts/session-management#session-caching
   session: {
@@ -21,20 +23,10 @@ export const auth = betterAuth({
     },
   },
 
-  // https://www.better-auth.com/docs/concepts/oauth
-  socialProviders: {
-    github: {
-      clientId: process.env.GITHUB_CLIENT_ID!,
-      clientSecret: process.env.GITHUB_CLIENT_SECRET!,
-    },
-    google: {
-      clientId: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-    },
-  },
-
   // https://www.better-auth.com/docs/authentication/email-password
   emailAndPassword: {
     enabled: true,
   },
 });
+
+export type Session = typeof auth.$Infer.Session.session;
