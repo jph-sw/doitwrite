@@ -16,13 +16,25 @@ function RouteComponent() {
   const collectionQuery = useSuspenseQuery(collectionQueryOptions(id));
 
   return (
-    <div>
-      Hello "/app/collection/$"!{" "}
-      <div>
-        <pre className="bg-secondary rounded-lg p-4">
-          {JSON.stringify(collectionQuery.data, null, 1)}
-        </pre>
-      </div>
+    <div className="max-w-4xl py-4 xl:w-1/2">
+      {collectionQuery.data && (
+        <>
+          <h1 className="text-xl">{collectionQuery.data.name}</h1>
+          <div className="flex gap-2">
+            <span className="text-foreground/70 text-sm">
+              {collectionQuery.data.created_at?.toLocaleDateString()}
+            </span>
+            <span className="text-foreground text-sm">
+              {collectionQuery.data.created_by}
+            </span>
+          </div>
+          <div>
+            <pre className="bg-secondary rounded-lg p-4">
+              {JSON.stringify(collectionQuery.data, null, 1)}
+            </pre>
+          </div>
+        </>
+      )}
     </div>
   );
 }

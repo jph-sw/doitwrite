@@ -50,7 +50,7 @@ export const fetchCollection = createServerFn({ method: "GET" })
   .handler(async (ctx) => {
     const res = await db.select().from(collection).where(eq(collection.id, ctx.data));
 
-    return res;
+    return res[0];
   });
 
 export const collectionQueryOptions = (collectionId: string) =>

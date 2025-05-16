@@ -1,6 +1,6 @@
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 import { AppSidebar } from "~/components/sidebar/app-sidebar";
-import { SidebarProvider, SidebarTrigger } from "~/components/ui/sidebar";
+import { SidebarProvider } from "~/components/ui/sidebar";
 
 export const Route = createFileRoute("/app")({
   component: RouteComponent,
@@ -23,8 +23,7 @@ function RouteComponent() {
   return (
     <SidebarProvider>
       <AppSidebar user={user!} teams={teams!} />
-      <div>
-        <SidebarTrigger />
+      <div className="flex w-full justify-center">
         <Outlet />
       </div>
     </SidebarProvider>

@@ -28,7 +28,6 @@ export function NavTeams({
               <CollapsibleTrigger asChild>
                 <SidebarMenuButton tooltip={team.name} className="flex justify-between">
                   <div className="flex items-center gap-1">
-                    <span className="h-2 w-2 rounded-full bg-green-300"></span>
                     <span>{team.name}</span>
                   </div>
                   <div

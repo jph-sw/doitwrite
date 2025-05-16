@@ -27,12 +27,15 @@ export function NavCollections({ teamId }: { teamId: string }) {
           {" "}
           <SidebarMenuSubButton asChild>
             <Link to="/app/collection/$id" params={{ id: collection.id }}>
-              <LibraryIcon />
+              <LibraryIcon style={{ color: collection.color }} />
               <span>{collection.name}</span>
             </Link>
           </SidebarMenuSubButton>
         </SidebarMenuSubItem>
       ))}
+      {collections.data?.length == 0 && (
+        <span className="text-foreground/60 text-xs">No collections for this team</span>
+      )}
     </SidebarMenuSub>
   );
 }

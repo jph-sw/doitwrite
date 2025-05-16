@@ -21,20 +21,22 @@ export const createTeam = createServerFn({ method: "POST" })
     }
     const name = data.get("name");
     const userId = data.get("user_id");
+    const slug = data.get("slug");
 
-    if (!name || !userId) {
+    if (!name || !userId || !slug) {
       throw new Error("Name is required");
     }
 
     return {
       name: name.toString(),
       userId: userId.toString(),
+      slug: slug.toString(),
     };
   })
-  .handler(async ({ data: { name, userId } }) => {
+  .handler(async ({ data: { name, userId, slug } }) => {
     const teamMutation = await db
       .insert(team)
-      .values({ id: randomUUID(), name: name })
+      .values({ id: randomUUID(), name, slug })
       .returning({ insertedId: team.id });
 
     await db
@@ -85,6 +87,7 @@ function RouteComponent() {
       >
         <input type="hidden" name="user_id" value={user?.id} />
         <Input name="name" />
+        <Input name="slug" />
         <Button type="submit">Submit</Button>
       </form>
     </div>

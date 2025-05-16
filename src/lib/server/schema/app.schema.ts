@@ -21,4 +21,5 @@ export const member = pgTable("member", {
 export const team = pgTable("team", {
   id: text("id").primaryKey(),
   name: text("name").notNull(),
+  slug: text("slug").notNull().unique(),
 });
