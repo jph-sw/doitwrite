@@ -81,3 +81,26 @@ export const fetchCollections = createServerFn({ method: "GET" })
 
     return res;
   });
+
+export const fetchAllCollections = createServerFn({ method: "GET" })
+  .validator((teamIds: string[]) => {
+    if (!teamIds) {
+      throw new Error("teamIds is required");
+    }
+
+    return teamIds;
+  })
+  .handler(async (ctx) => {
+    const res: (typeof collection.$inferSelect)[] = [];
+
+    for (const teamId of ctx.data) {
+      const response = await db
+        .select()
+        .from(collection)
+        .where(eq(collection.team_id, teamId));
+
+      res.push(...response);
+    }
+
+    return res;
+  });

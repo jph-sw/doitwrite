@@ -24,7 +24,6 @@ export function NavCollections({ teamId }: { teamId: string }) {
       )}
       {collections.data?.map((collection) => (
         <SidebarMenuSubItem key={collection.id}>
-          {" "}
           <SidebarMenuSubButton asChild>
             <Link to="/app/collection/$id" params={{ id: collection.id }}>
               <LibraryIcon style={{ color: collection.color }} />

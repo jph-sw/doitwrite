@@ -1,11 +1,25 @@
 import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import debounce from "lodash.debounce";
-import { PenIcon, SaveIcon } from "lucide-react";
+import {
+  DeleteIcon,
+  EllipsisVerticalIcon,
+  MoveIcon,
+  PenIcon,
+  SaveIcon,
+} from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { TipTapEditor } from "~/components/editor/editor";
 import { Button } from "~/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "~/components/ui/dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "~/components/ui/dropdown-menu";
 import { Input } from "~/components/ui/input";
 import { entryQueryOptions, updateEntry } from "~/lib/entries";
 import { entry } from "~/lib/server/schema";
@@ -14,10 +28,9 @@ import { cn } from "~/lib/utils";
 export const Route = createFileRoute("/app/doc/$id")({
   component: RouteComponent,
   loader: async ({ params: { id }, context }) => {
-    const collection = await context.queryClient.ensureQueryData(entryQueryOptions(id));
     const entries = await context.queryClient.ensureQueryData(entryQueryOptions(id));
 
-    return { collection, entries };
+    return { entries };
   },
 });
 
@@ -165,6 +178,46 @@ function RouteComponent() {
               </>
             )}
           </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button size={"sm"} className="px-0 py-0" variant={"outline"}>
+                <EllipsisVerticalIcon />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuGroup>
+                <DropdownMenuItem
+                  onClick={() => {
+                    if (isEdit) {
+                      handleSave();
+                    }
+                    setIsEdit(!isEdit);
+                  }}
+                >
+                  {isEdit ? (
+                    <>
+                      Save <SaveIcon className="ml-auto" />
+                    </>
+                  ) : (
+                    <>
+                      Edit <PenIcon className="ml-auto" />
+                    </>
+                  )}
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/app/move/$id" params={{ id: entryData.id }}>
+                    Move <MoveIcon className="ml-auto" />
+                  </Link>
+                </DropdownMenuItem>
+              </DropdownMenuGroup>
+              <DropdownMenuSeparator />
+              <DropdownMenuGroup>
+                <DropdownMenuItem variant={"destructive"}>
+                  Delete <DeleteIcon className="ml-auto" />
+                </DropdownMenuItem>
+              </DropdownMenuGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
       <div className="container mx-auto p-4">

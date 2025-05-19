@@ -18,6 +18,7 @@ import { Route as AppIndexImport } from './routes/app/index'
 import { Route as AppSettingsImport } from './routes/app/settings'
 import { Route as authSignupImport } from './routes/(auth)/signup'
 import { Route as authLoginImport } from './routes/(auth)/login'
+import { Route as AppMoveIdImport } from './routes/app/move.$id'
 import { Route as AppDocIdImport } from './routes/app/doc.$id'
 import { Route as AppCollectionIdImport } from './routes/app/collection/$id'
 
@@ -62,6 +63,12 @@ const authLoginRoute = authLoginImport.update({
   id: '/login',
   path: '/login',
   getParentRoute: () => authRouteRoute,
+} as any)
+
+const AppMoveIdRoute = AppMoveIdImport.update({
+  id: '/move/$id',
+  path: '/move/$id',
+  getParentRoute: () => AppRouteRoute,
 } as any)
 
 const AppDocIdRoute = AppDocIdImport.update({
@@ -143,6 +150,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppDocIdImport
       parentRoute: typeof AppRouteImport
     }
+    '/app/move/$id': {
+      id: '/app/move/$id'
+      path: '/move/$id'
+      fullPath: '/app/move/$id'
+      preLoaderRoute: typeof AppMoveIdImport
+      parentRoute: typeof AppRouteImport
+    }
   }
 }
 
@@ -167,6 +181,7 @@ interface AppRouteRouteChildren {
   AppIndexRoute: typeof AppIndexRoute
   AppCollectionIdRoute: typeof AppCollectionIdRoute
   AppDocIdRoute: typeof AppDocIdRoute
+  AppMoveIdRoute: typeof AppMoveIdRoute
 }
 
 const AppRouteRouteChildren: AppRouteRouteChildren = {
@@ -174,6 +189,7 @@ const AppRouteRouteChildren: AppRouteRouteChildren = {
   AppIndexRoute: AppIndexRoute,
   AppCollectionIdRoute: AppCollectionIdRoute,
   AppDocIdRoute: AppDocIdRoute,
+  AppMoveIdRoute: AppMoveIdRoute,
 }
 
 const AppRouteRouteWithChildren = AppRouteRoute._addFileChildren(
@@ -189,6 +205,7 @@ export interface FileRoutesByFullPath {
   '/app/': typeof AppIndexRoute
   '/app/collection/$id': typeof AppCollectionIdRoute
   '/app/doc/$id': typeof AppDocIdRoute
+  '/app/move/$id': typeof AppMoveIdRoute
 }
 
 export interface FileRoutesByTo {
@@ -199,6 +216,7 @@ export interface FileRoutesByTo {
   '/app': typeof AppIndexRoute
   '/app/collection/$id': typeof AppCollectionIdRoute
   '/app/doc/$id': typeof AppDocIdRoute
+  '/app/move/$id': typeof AppMoveIdRoute
 }
 
 export interface FileRoutesById {
@@ -212,6 +230,7 @@ export interface FileRoutesById {
   '/app/': typeof AppIndexRoute
   '/app/collection/$id': typeof AppCollectionIdRoute
   '/app/doc/$id': typeof AppDocIdRoute
+  '/app/move/$id': typeof AppMoveIdRoute
 }
 
 export interface FileRouteTypes {
@@ -225,6 +244,7 @@ export interface FileRouteTypes {
     | '/app/'
     | '/app/collection/$id'
     | '/app/doc/$id'
+    | '/app/move/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -234,6 +254,7 @@ export interface FileRouteTypes {
     | '/app'
     | '/app/collection/$id'
     | '/app/doc/$id'
+    | '/app/move/$id'
   id:
     | '__root__'
     | '/'
@@ -245,6 +266,7 @@ export interface FileRouteTypes {
     | '/app/'
     | '/app/collection/$id'
     | '/app/doc/$id'
+    | '/app/move/$id'
   fileRoutesById: FileRoutesById
 }
 
@@ -291,7 +313,8 @@ export const routeTree = rootRoute
         "/app/settings",
         "/app/",
         "/app/collection/$id",
-        "/app/doc/$id"
+        "/app/doc/$id",
+        "/app/move/$id"
       ]
     },
     "/(auth)/login": {
@@ -316,6 +339,10 @@ export const routeTree = rootRoute
     },
     "/app/doc/$id": {
       "filePath": "app/doc.$id.tsx",
+      "parent": "/app"
+    },
+    "/app/move/$id": {
+      "filePath": "app/move.$id.tsx",
       "parent": "/app"
     }
   }
