@@ -70,8 +70,6 @@ function RouteComponent() {
       throw new Error("No collection selected");
     }
 
-    console.log("moving entryy to", selectedCollection);
-
     await updateEntry({
       data: {
         newEntry: {

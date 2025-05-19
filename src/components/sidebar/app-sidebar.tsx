@@ -66,6 +66,19 @@ export function AppSidebar({
       });
       return res[0];
     },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["entries"] });
+      queryClient.invalidateQueries({ queryKey: ["entry", data.id] });
+      queryClient.invalidateQueries({ queryKey: ["collections"] });
+      navigate({
+        to: "/app/doc/$id",
+        params: {
+          id: data.id,
+        },
+      });
+
+      setCreateOpen(false);
+    },
   });
 
   return (
@@ -121,17 +134,9 @@ export function AppSidebar({
                         name: title,
                         team_id: selectedTeam?.id || "",
                         collection_id: selectedCollection?.id || "",
-                        content: "",
+                        content: "<h1>Hello World!</h1>",
                         created_by: user.id,
                         updated_by: user.id,
-                      });
-                      queryClient.invalidateQueries({ queryKey: ["entries"] });
-                      setCreateOpen(false);
-                      navigate({
-                        to: "/app/doc/$id",
-                        params: {
-                          id: selectedCollection?.id || "",
-                        },
                       });
                     }}
                     disabled={createEntryMutation.isPending}
