@@ -223,7 +223,7 @@ function RouteComponent() {
       <div className="container mx-auto p-4">
         {isPending && "Loading..."}
         {entryData && (
-          <div className="flex flex-col overflow-visible overflow-y-scroll">
+          <div className="flex flex-col">
             <input
               value={title}
               onChange={(e) => setTitle(e.target.value)}
