@@ -1,12 +1,27 @@
-import { BookUserIcon, ChevronRight, Home, SquarePenIcon } from "lucide-react";
+import {
+  BookUserIcon,
+  ChevronRight,
+  Home,
+  SearchIcon,
+  SquarePenIcon,
+} from "lucide-react";
 
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { Link, useNavigate, useRouteContext } from "@tanstack/react-router";
 import { User } from "better-auth";
 import { useState } from "react";
+import { fetchAllCollections } from "~/lib/collections";
 import { createEntry } from "~/lib/entries";
 import { collection, team } from "~/lib/server/schema";
 import { Button } from "../ui/button";
+import {
+  CommandDialog,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "../ui/command";
 import { Dialog, DialogContent, DialogFooter, DialogTrigger } from "../ui/dialog";
 import { Input } from "../ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger } from "../ui/select";
@@ -44,6 +59,7 @@ export function AppSidebar({
 }) {
   const { queryClient } = useRouteContext({ from: "__root__" });
 
+  const [commandOpen, setCommandOpen] = useState<boolean>();
   const [createOpen, setCreateOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [selectedTeam, setSelectedTeam] = useState<typeof team.$inferSelect>();
@@ -51,6 +67,12 @@ export function AppSidebar({
     useState<typeof collection.$inferSelect>();
 
   const navigate = useNavigate();
+
+  const collectionsQuery = useQuery({
+    queryKey: ["collections"],
+    queryFn: async () =>
+      await fetchAllCollections({ data: teams.map((team) => team.id) }),
+  });
 
   const createEntryMutation = useMutation({
     mutationFn: async (data: {
@@ -152,7 +174,6 @@ export function AppSidebar({
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Application</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {items.map((item) => (
@@ -165,6 +186,26 @@ export function AppSidebar({
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
+              <SidebarMenuItem>
+                <SidebarMenuButton onClick={() => setCommandOpen(true)}>
+                  <SearchIcon />
+                  Search
+                </SidebarMenuButton>
+                <CommandDialog open={commandOpen} onOpenChange={setCommandOpen}>
+                  <CommandInput placeholder="Type a command or search..." />
+                  <CommandList>
+                    <CommandEmpty>No results found.</CommandEmpty>
+                    <CommandGroup heading="Collection">
+                      <CommandItem>Calendar</CommandItem>
+                      <CommandItem>Search Emoji</CommandItem>
+                      <CommandItem>Calculator</CommandItem>
+                      {collectionsQuery.data?.map((colletion) => (
+                        <CommandItem key={colletion.id}>{colletion.name}</CommandItem>
+                      ))}
+                    </CommandGroup>
+                  </CommandList>
+                </CommandDialog>
+              </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
