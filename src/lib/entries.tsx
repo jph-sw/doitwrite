@@ -1,8 +1,8 @@
 import { queryOptions } from "@tanstack/react-query";
 import { createServerFn } from "@tanstack/react-start";
-import { eq } from "drizzle-orm";
+import { eq, inArray } from "drizzle-orm";
 import { db } from "./server/db";
-import { entry } from "./server/schema";
+import { entry, team } from "./server/schema";
 
 export const fetchEntries = createServerFn({ method: "GET" })
   .validator((collectionId: string) => {
@@ -15,6 +15,21 @@ export const fetchEntries = createServerFn({ method: "GET" })
   .handler(async (ctx) => {
     const res = await db.select().from(entry).where(eq(entry.collection_id, ctx.data));
 
+    return res;
+  });
+
+export const fetchEntriesByTeams = createServerFn({ method: "GET" })
+  .validator((teams: (typeof team.$inferSelect)[]) => {
+    if (!teams) {
+      throw new Error("teams is needed");
+    }
+
+    return teams;
+  })
+  .handler(async (ctx) => {
+    const teamIds = ctx.data.map((t) => t.id);
+    if (!teamIds.length) return [];
+    const res = await db.select().from(entry).where(inArray(entry.team_id, teamIds));
     return res;
   });
 
@@ -88,4 +103,10 @@ export const entryQueryOptions = (entryId: string) =>
   queryOptions({
     queryKey: ["entry", entryId],
     queryFn: () => fetchEntry({ data: entryId }),
+  });
+
+export const entriesByTeamsQueryOptions = (teams: (typeof team.$inferSelect)[]) =>
+  queryOptions({
+    queryKey: ["entries", teams],
+    queryFn: () => fetchEntriesByTeams({ data: teams }),
   });

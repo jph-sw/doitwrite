@@ -9,9 +9,9 @@ import {
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Link, useNavigate, useRouteContext } from "@tanstack/react-router";
 import { User } from "better-auth";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { fetchAllCollections } from "~/lib/collections";
-import { createEntry } from "~/lib/entries";
+import { createEntry, entriesByTeamsQueryOptions } from "~/lib/entries";
 import { collection, team } from "~/lib/server/schema";
 import { Button } from "../ui/button";
 import {
@@ -34,6 +34,7 @@ import {
   SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
+  SidebarMenuBadge,
   SidebarMenuButton,
   SidebarMenuItem,
 } from "../ui/sidebar";
@@ -74,6 +75,8 @@ export function AppSidebar({
       await fetchAllCollections({ data: teams.map((team) => team.id) }),
   });
 
+  const entriesQuery = useQuery(entriesByTeamsQueryOptions(teams));
+
   const createEntryMutation = useMutation({
     mutationFn: async (data: {
       name: string;
@@ -102,6 +105,17 @@ export function AppSidebar({
       setCreateOpen(false);
     },
   });
+
+  useEffect(() => {
+    const down = (e: KeyboardEvent) => {
+      if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
+        e.preventDefault();
+        setCommandOpen((open) => !open);
+      }
+    };
+    document.addEventListener("keydown", down);
+    return () => document.removeEventListener("keydown", down);
+  }, []);
 
   return (
     <Sidebar>
@@ -191,16 +205,54 @@ export function AppSidebar({
                   <SearchIcon />
                   Search
                 </SidebarMenuButton>
+                <SidebarMenuBadge>
+                  <kbd className="bg-muted text-muted-foreground pointer-events-none inline-flex h-5 items-center gap-1 rounded border px-1.5 font-mono text-[10px] font-medium opacity-100 select-none">
+                    <span className="text-xs">⌘</span>K
+                  </kbd>
+                </SidebarMenuBadge>
                 <CommandDialog open={commandOpen} onOpenChange={setCommandOpen}>
                   <CommandInput placeholder="Type a command or search..." />
                   <CommandList>
                     <CommandEmpty>No results found.</CommandEmpty>
-                    <CommandGroup heading="Collection">
-                      <CommandItem>Calendar</CommandItem>
-                      <CommandItem>Search Emoji</CommandItem>
-                      <CommandItem>Calculator</CommandItem>
+                    <CommandGroup heading="Collections">
                       {collectionsQuery.data?.map((colletion) => (
-                        <CommandItem key={colletion.id}>{colletion.name}</CommandItem>
+                        <CommandItem
+                          key={colletion.id}
+                          value={colletion.name + colletion.id}
+                          onSelect={() => {
+                            navigate({
+                              to: "/app/collection/$id",
+                              params: {
+                                id: colletion.id,
+                              },
+                            });
+                            setCommandOpen(false);
+                          }}
+                        >
+                          {colletion.name}
+                        </CommandItem>
+                      ))}
+                    </CommandGroup>
+                    <CommandGroup heading="Entries">
+                      {entriesQuery.data?.map((entry) => (
+                        <CommandItem
+                          key={entry.id}
+                          value={entry.name + entry.id}
+                          onSelect={() => {
+                            navigate({
+                              to: "/app/doc/$id",
+                              params: {
+                                id: entry.id,
+                              },
+                            });
+                            setCommandOpen(false);
+                          }}
+                        >
+                          {entry.name}{" "}
+                          <span className="text-foreground/70 text-xs">
+                            {entry.updated_at?.toLocaleString()}
+                          </span>
+                        </CommandItem>
                       ))}
                     </CommandGroup>
                   </CommandList>
