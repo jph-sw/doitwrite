@@ -15,9 +15,13 @@ import { Route as AppRouteImport } from './routes/app/route'
 import { Route as authRouteImport } from './routes/(auth)/route'
 import { Route as IndexImport } from './routes/index'
 import { Route as AppIndexImport } from './routes/app/index'
-import { Route as AppSettingsImport } from './routes/app/settings'
 import { Route as authSignupImport } from './routes/(auth)/signup'
 import { Route as authLoginImport } from './routes/(auth)/login'
+import { Route as AppSettingsRouteImport } from './routes/app/settings/route'
+import { Route as AppSettingsIndexImport } from './routes/app/settings/index'
+import { Route as AppSettingsTeamsImport } from './routes/app/settings/teams'
+import { Route as AppSettingsProfileImport } from './routes/app/settings/profile'
+import { Route as AppSettingsMembersImport } from './routes/app/settings/members'
 import { Route as AppMoveIdImport } from './routes/app/move.$id'
 import { Route as AppDocIdImport } from './routes/app/doc.$id'
 import { Route as AppCollectionIdImport } from './routes/app/collection/$id'
@@ -47,12 +51,6 @@ const AppIndexRoute = AppIndexImport.update({
   getParentRoute: () => AppRouteRoute,
 } as any)
 
-const AppSettingsRoute = AppSettingsImport.update({
-  id: '/settings',
-  path: '/settings',
-  getParentRoute: () => AppRouteRoute,
-} as any)
-
 const authSignupRoute = authSignupImport.update({
   id: '/signup',
   path: '/signup',
@@ -63,6 +61,36 @@ const authLoginRoute = authLoginImport.update({
   id: '/login',
   path: '/login',
   getParentRoute: () => authRouteRoute,
+} as any)
+
+const AppSettingsRouteRoute = AppSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AppRouteRoute,
+} as any)
+
+const AppSettingsIndexRoute = AppSettingsIndexImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppSettingsRouteRoute,
+} as any)
+
+const AppSettingsTeamsRoute = AppSettingsTeamsImport.update({
+  id: '/teams',
+  path: '/teams',
+  getParentRoute: () => AppSettingsRouteRoute,
+} as any)
+
+const AppSettingsProfileRoute = AppSettingsProfileImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => AppSettingsRouteRoute,
+} as any)
+
+const AppSettingsMembersRoute = AppSettingsMembersImport.update({
+  id: '/members',
+  path: '/members',
+  getParentRoute: () => AppSettingsRouteRoute,
 } as any)
 
 const AppMoveIdRoute = AppMoveIdImport.update({
@@ -108,6 +136,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppRouteImport
       parentRoute: typeof rootRoute
     }
+    '/app/settings': {
+      id: '/app/settings'
+      path: '/settings'
+      fullPath: '/app/settings'
+      preLoaderRoute: typeof AppSettingsRouteImport
+      parentRoute: typeof AppRouteImport
+    }
     '/(auth)/login': {
       id: '/(auth)/login'
       path: '/login'
@@ -121,13 +156,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/signup'
       preLoaderRoute: typeof authSignupImport
       parentRoute: typeof authRouteImport
-    }
-    '/app/settings': {
-      id: '/app/settings'
-      path: '/settings'
-      fullPath: '/app/settings'
-      preLoaderRoute: typeof AppSettingsImport
-      parentRoute: typeof AppRouteImport
     }
     '/app/': {
       id: '/app/'
@@ -157,6 +185,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppMoveIdImport
       parentRoute: typeof AppRouteImport
     }
+    '/app/settings/members': {
+      id: '/app/settings/members'
+      path: '/members'
+      fullPath: '/app/settings/members'
+      preLoaderRoute: typeof AppSettingsMembersImport
+      parentRoute: typeof AppSettingsRouteImport
+    }
+    '/app/settings/profile': {
+      id: '/app/settings/profile'
+      path: '/profile'
+      fullPath: '/app/settings/profile'
+      preLoaderRoute: typeof AppSettingsProfileImport
+      parentRoute: typeof AppSettingsRouteImport
+    }
+    '/app/settings/teams': {
+      id: '/app/settings/teams'
+      path: '/teams'
+      fullPath: '/app/settings/teams'
+      preLoaderRoute: typeof AppSettingsTeamsImport
+      parentRoute: typeof AppSettingsRouteImport
+    }
+    '/app/settings/': {
+      id: '/app/settings/'
+      path: '/'
+      fullPath: '/app/settings/'
+      preLoaderRoute: typeof AppSettingsIndexImport
+      parentRoute: typeof AppSettingsRouteImport
+    }
   }
 }
 
@@ -176,8 +232,25 @@ const authRouteRouteWithChildren = authRouteRoute._addFileChildren(
   authRouteRouteChildren,
 )
 
+interface AppSettingsRouteRouteChildren {
+  AppSettingsMembersRoute: typeof AppSettingsMembersRoute
+  AppSettingsProfileRoute: typeof AppSettingsProfileRoute
+  AppSettingsTeamsRoute: typeof AppSettingsTeamsRoute
+  AppSettingsIndexRoute: typeof AppSettingsIndexRoute
+}
+
+const AppSettingsRouteRouteChildren: AppSettingsRouteRouteChildren = {
+  AppSettingsMembersRoute: AppSettingsMembersRoute,
+  AppSettingsProfileRoute: AppSettingsProfileRoute,
+  AppSettingsTeamsRoute: AppSettingsTeamsRoute,
+  AppSettingsIndexRoute: AppSettingsIndexRoute,
+}
+
+const AppSettingsRouteRouteWithChildren =
+  AppSettingsRouteRoute._addFileChildren(AppSettingsRouteRouteChildren)
+
 interface AppRouteRouteChildren {
-  AppSettingsRoute: typeof AppSettingsRoute
+  AppSettingsRouteRoute: typeof AppSettingsRouteRouteWithChildren
   AppIndexRoute: typeof AppIndexRoute
   AppCollectionIdRoute: typeof AppCollectionIdRoute
   AppDocIdRoute: typeof AppDocIdRoute
@@ -185,7 +258,7 @@ interface AppRouteRouteChildren {
 }
 
 const AppRouteRouteChildren: AppRouteRouteChildren = {
-  AppSettingsRoute: AppSettingsRoute,
+  AppSettingsRouteRoute: AppSettingsRouteRouteWithChildren,
   AppIndexRoute: AppIndexRoute,
   AppCollectionIdRoute: AppCollectionIdRoute,
   AppDocIdRoute: AppDocIdRoute,
@@ -199,24 +272,31 @@ const AppRouteRouteWithChildren = AppRouteRoute._addFileChildren(
 export interface FileRoutesByFullPath {
   '/': typeof authRouteRouteWithChildren
   '/app': typeof AppRouteRouteWithChildren
+  '/app/settings': typeof AppSettingsRouteRouteWithChildren
   '/login': typeof authLoginRoute
   '/signup': typeof authSignupRoute
-  '/app/settings': typeof AppSettingsRoute
   '/app/': typeof AppIndexRoute
   '/app/collection/$id': typeof AppCollectionIdRoute
   '/app/doc/$id': typeof AppDocIdRoute
   '/app/move/$id': typeof AppMoveIdRoute
+  '/app/settings/members': typeof AppSettingsMembersRoute
+  '/app/settings/profile': typeof AppSettingsProfileRoute
+  '/app/settings/teams': typeof AppSettingsTeamsRoute
+  '/app/settings/': typeof AppSettingsIndexRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof authRouteRouteWithChildren
   '/login': typeof authLoginRoute
   '/signup': typeof authSignupRoute
-  '/app/settings': typeof AppSettingsRoute
   '/app': typeof AppIndexRoute
   '/app/collection/$id': typeof AppCollectionIdRoute
   '/app/doc/$id': typeof AppDocIdRoute
   '/app/move/$id': typeof AppMoveIdRoute
+  '/app/settings/members': typeof AppSettingsMembersRoute
+  '/app/settings/profile': typeof AppSettingsProfileRoute
+  '/app/settings/teams': typeof AppSettingsTeamsRoute
+  '/app/settings': typeof AppSettingsIndexRoute
 }
 
 export interface FileRoutesById {
@@ -224,13 +304,17 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/(auth)': typeof authRouteRouteWithChildren
   '/app': typeof AppRouteRouteWithChildren
+  '/app/settings': typeof AppSettingsRouteRouteWithChildren
   '/(auth)/login': typeof authLoginRoute
   '/(auth)/signup': typeof authSignupRoute
-  '/app/settings': typeof AppSettingsRoute
   '/app/': typeof AppIndexRoute
   '/app/collection/$id': typeof AppCollectionIdRoute
   '/app/doc/$id': typeof AppDocIdRoute
   '/app/move/$id': typeof AppMoveIdRoute
+  '/app/settings/members': typeof AppSettingsMembersRoute
+  '/app/settings/profile': typeof AppSettingsProfileRoute
+  '/app/settings/teams': typeof AppSettingsTeamsRoute
+  '/app/settings/': typeof AppSettingsIndexRoute
 }
 
 export interface FileRouteTypes {
@@ -238,35 +322,46 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/app'
+    | '/app/settings'
     | '/login'
     | '/signup'
-    | '/app/settings'
     | '/app/'
     | '/app/collection/$id'
     | '/app/doc/$id'
     | '/app/move/$id'
+    | '/app/settings/members'
+    | '/app/settings/profile'
+    | '/app/settings/teams'
+    | '/app/settings/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/login'
     | '/signup'
-    | '/app/settings'
     | '/app'
     | '/app/collection/$id'
     | '/app/doc/$id'
     | '/app/move/$id'
+    | '/app/settings/members'
+    | '/app/settings/profile'
+    | '/app/settings/teams'
+    | '/app/settings'
   id:
     | '__root__'
     | '/'
     | '/(auth)'
     | '/app'
+    | '/app/settings'
     | '/(auth)/login'
     | '/(auth)/signup'
-    | '/app/settings'
     | '/app/'
     | '/app/collection/$id'
     | '/app/doc/$id'
     | '/app/move/$id'
+    | '/app/settings/members'
+    | '/app/settings/profile'
+    | '/app/settings/teams'
+    | '/app/settings/'
   fileRoutesById: FileRoutesById
 }
 
@@ -317,6 +412,16 @@ export const routeTree = rootRoute
         "/app/move/$id"
       ]
     },
+    "/app/settings": {
+      "filePath": "app/settings/route.tsx",
+      "parent": "/app",
+      "children": [
+        "/app/settings/members",
+        "/app/settings/profile",
+        "/app/settings/teams",
+        "/app/settings/"
+      ]
+    },
     "/(auth)/login": {
       "filePath": "(auth)/login.tsx",
       "parent": "/(auth)"
@@ -324,10 +429,6 @@ export const routeTree = rootRoute
     "/(auth)/signup": {
       "filePath": "(auth)/signup.tsx",
       "parent": "/(auth)"
-    },
-    "/app/settings": {
-      "filePath": "app/settings.tsx",
-      "parent": "/app"
     },
     "/app/": {
       "filePath": "app/index.tsx",
@@ -344,6 +445,22 @@ export const routeTree = rootRoute
     "/app/move/$id": {
       "filePath": "app/move.$id.tsx",
       "parent": "/app"
+    },
+    "/app/settings/members": {
+      "filePath": "app/settings/members.tsx",
+      "parent": "/app/settings"
+    },
+    "/app/settings/profile": {
+      "filePath": "app/settings/profile.tsx",
+      "parent": "/app/settings"
+    },
+    "/app/settings/teams": {
+      "filePath": "app/settings/teams.tsx",
+      "parent": "/app/settings"
+    },
+    "/app/settings/": {
+      "filePath": "app/settings/index.tsx",
+      "parent": "/app/settings"
     }
   }
 }
